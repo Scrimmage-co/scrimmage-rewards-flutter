@@ -5,29 +5,21 @@ the Scrimmage Rewards program into your Flutter application.
 
 ## Prerequisites
 
-Before integrating the Scrimmage Rewards program into your Android application,
+Before integrating the Scrimmage Rewards program into your Flutter application,
 ensure that you have the following prerequisites in place:
 
 - Android Studio (or any other compatible development environment) installed on your machine.
 - Access to the Scrimmage Rewards program and an active account.
 - A backend server that can return a valid token for the Scrimmage Rewards program.
+- Android minSdkVersion 19+
+- iOS 11.0+
+- More requirements you can find here https://pub.dev/packages/webview_flutter
 
 ## Integration Steps
 
 Follow the steps below to integrate the Scrimmage Rewards program into your Flutter application:
 
-
-
-[//]: # (TODO FIX BELOW)
-
-
-[//]: # (flutter pub add webview_flutter_android)
-flutter pub add webview_flutter
-flutter pub add http
-
-MIN SDK API level 19
-
-
+Check [main.dart](./lib/main.dart) for example code.
 
 1. **Install the WebView Support Library**
 
@@ -35,17 +27,30 @@ MIN SDK API level 19
    you need to install the WebView support library. This library allows you to embed
    web content within your Flutter application.
 
-2. **Add the JavaScript Enabled Property**
+```bash
+$ flutter pub add webview_flutter
+```
 
-   In order for the Scrimmage Rewards program to function correctly,
-   you must enable JavaScript in the WebView that will display
-   the program's content. To do this, set the `javaScriptEnabled` property
-   of the WebView to `true`. This will ensure that the JavaScript code used
-   by the Scrimmage Rewards program can be executed.
+2. **Import the WebView Support Library**
 
-   Check [MainActivity.kt](./app/src/main/java/co/scrimmage/rewards/androidexample/MainActivity.kt) for example code.
+   Once you have installed the WebView support library, you can import it into your
+   Flutter application. You can import the WebView support library using the following
+   code:
 
-3. **Add token retrieval logic for user authentication**
+```dart
+import 'package:webview_flutter/webview_flutter.dart';
+```
+
+3. **Create a WebViewController to use a WebViewWidget**
+
+It is important to set JavaScript mode as `unrestricted`. `JavaScriptMode.unrestricted`
+
+```dart
+final webViewController = WebViewController()
+   ..setJavaScriptMode(JavaScriptMode.unrestricted);
+``` 
+
+4. **Add token retrieval logic for user authentication**
 
    The Scrimmage Rewards program requires a valid token to authenticate
    the user and display the program's content. To retrieve a valid token,
@@ -53,7 +58,16 @@ MIN SDK API level 19
    Once you have retrieved the token, you can pass it to the Scrimmage Rewards
    program to authenticate the user and display the program's content.
 
-4. **Ensure WebView Is Not Displayed Until Token Is Available**
+```bash
+$ flutter pub add http
+```
+
+```dart
+import 'package:http/http.dart' as http;
+```
+
+5. **Ensure WebView Is Not Displayed Until Token Is Available**
 
    It is essential to ensure that the WebView displaying the Scrimmage Rewards
-   program's content is not visible until a valid token is available.
+   program's content is not visible until a valid token is available. Probably you will need to use `FutureBuilder` to
+   get token from your backend server and install http lib.
