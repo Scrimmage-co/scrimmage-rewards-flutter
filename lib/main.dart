@@ -34,45 +34,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // TODO Remove counter
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  // const token = await fetch('/api/token').then(res => res.text());
-  // const iframe = document.getElementById('scrimmage-iframe');
-  // var token = '';
-  // var webViewUrl = 'https://partnerid.apps.scrimmage.co.co/?token=${token}';
-
   final webViewController = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted);
-    // ..loadRequest(Uri.parse('https://deadsimplechat.com/IyL5YkDM3'));
-    // ..loadRequest(Uri.parse('https://github.com/AndroidSDKSources/android-sdk-sources-list'));
-
-  // WebViewController controller = WebViewController()
-  //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  //   ..setBackgroundColor(const Color(0x00000000))
-  //   ..setNavigationDelegate(
-  //     NavigationDelegate(
-  //       onProgress: (int progress) {
-  //         // Update loading bar.
-  //       },
-  //       onPageStarted: (String url) {},
-  //       onPageFinished: (String url) {},
-  //       onWebResourceError: (WebResourceError error) {},
-  //       onNavigationRequest: (NavigationRequest request) {
-  //         if (request.url.startsWith('https://www.youtube.com/')) {
-  //           return NavigationDecision.prevent;
-  //         }
-  //         return NavigationDecision.navigate;
-  //       },
-  //     ),
-  //   )
-  //   ..loadRequest(Uri.parse('https://flutter.dev'));
 
   @override
   Widget build(BuildContext context) {
@@ -81,47 +44,38 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body:
-
-      Center(
+      body: Center(
         child: FutureBuilder<String>(
           future: fetchToken(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              // return Text('Token: ${snapshot.data}');
               webViewController.loadRequest(Uri.parse(snapshot.data!));
-              return WebViewWidget(controller: webViewController);
+              return Column(
+                children: [
+                  const Text(
+                    'Page content above the Scrimmage Reward',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: WebViewWidget(controller: webViewController),
+                    ),
+                  ),
+                  const Text(
+                    'Page content below the Scrimmage Reward',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              );
             }
           },
         ),
       ),
-
-      // WebViewWidget(controller: webViewController),
-
-      // Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       const Text(
-      //         'You have pushed the button this many times:',
-      //       ),
-      //       Text(
-      //         '$_counter',
-      //         style: Theme.of(context).textTheme.headlineMedium,
-      //       ),
-      //       WebViewWidget(controller: webViewController)
-      //     ],
-      //   ),
-      // ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -136,7 +90,6 @@ Future<String> fetchToken() async {
     if (response.statusCode == 200) {
       final json = response.body;
       final token = jsonDecode(json)['token'];
-      // final scrimmageRewardsUrl = 'https://coinflip.apps.scrimmage.co/?token=${token}';
       final webViewUrl = scrimmageRewardsUrl + token;
       return webViewUrl;
     } else {
