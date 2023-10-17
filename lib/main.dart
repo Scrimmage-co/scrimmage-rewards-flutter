@@ -38,6 +38,29 @@ class _MyHomePageState extends State<MyHomePage> {
     ..setJavaScriptMode(JavaScriptMode.unrestricted);
 
   @override
+  void initState() {
+    super.initState();
+    // Add JavaScriptChannel to handle messages from WebView
+    webViewController.addJavascriptChannel(
+      JavascriptChannel(
+        name: 'CHANNEL_NAME1', // Define a name for the channel
+        onMessageReceived: (JavascriptMessage message) {
+          // Handle the message received from the WebView
+          showMessage(message.message);
+        },
+      ),
+    );
+  }
+
+  void showMessage(String message) {
+    // Display the message at the top of the screen as text
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
 Future<String> fetchToken() async {
   const tokenBackendUrl =
       'https://us-central1-bright-practice-331514.cloudfunctions.net/requestGenerateAuthInfo';
-  const scrimmageRewardsUrl = 'https://coinflip.apps.scrimmage.co/?token=';
+  const scrimmageRewardsUrl = 'https://1fa7-91-244-31-199.ngrok-free.app/?token=';
 
   try {
     final response = await http.get(Uri.parse(tokenBackendUrl));
