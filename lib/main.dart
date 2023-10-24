@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Add JavaScriptChannel to handle messages from WebView
     webViewController.addJavaScriptChannel(
-      'CHANNEL_NAME1',
+      'ScrimmageChannel',
       onMessageReceived: (JavaScriptMessage message) {
         // Handle the message received from the WebView
         showMessage(message.message);
